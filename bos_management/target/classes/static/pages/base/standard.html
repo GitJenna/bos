@@ -28,33 +28,33 @@
                 border: false,
                 rownumbers: true,
                 striped: true,
-                pageList: [5,10,30, 50, 100],
+                pageList: [5, 10, 30, 50, 100],//当设置分页属性,初始化页面大小选择列表。
                 pagination: true,
                 url: "../../standard/pageQuery",
                 idField: 'id',
-                toolbar: toolbar,
+                toolbar: toolbar,//工具栏
                 columns: columns
             });
 
             $("#save").click(function () {
-            	//表单对象通过效验
-            	if($("#standardForm").form('validate')){
-            		$.post("../../standard/save",$("#standardForm").serialize(),function(data){
-            			if(data.success){
-            				$.messager.show({
-            					title:'提示窗口',
-            					msg:data.message
-            				});
-            				//重置表单
-            				$("#standardForm").get(0).reset();
-            				//刷新列表
-            				$('#grid').datagrid("reload");
-            				//关闭窗口
-            				$("#standardWindow").window('close');
-            			}
-            		});
-            	}else {
-            	    $.messager.alert("警告","表单中还存在需要一些非法内容","warning");
+                //表单对象通过效验
+                if ($("#standardForm").form('validate')) {
+                    $.post("../../standard/save", $("#standardForm").serialize(), function (data) {
+                        if (data.success) {
+                            $.messager.show({
+                                title: '提示窗口',
+                                msg: data.message
+                            });
+                            //重置表单
+                            $("#standardForm").get(0).reset();
+                            //刷新列表
+                            $('#grid').datagrid("reload");
+                            //关闭窗口
+                            $("#standardWindow").window('close');
+                        }
+                    });
+                } else {
+                    $.messager.alert("警告", "表单中还存在需要一些非法内容", "warning");
                 }
             });
 
@@ -67,7 +67,8 @@
             iconCls: 'icon-add',
             handler: function () {
                 $("#standardWindow").window("open");
-                $("#standardFrom").form("clear");
+                $("#standardForm").get(0).reset();
+                //$("#standardForm").form("clear");
             }
         }, {
             id: 'button-edit',
@@ -78,13 +79,9 @@
                 var rows = $("#grid").datagrid("getSelections");
                 if (rows.length == 1) {
                     var row = rows[0];
-
-                    alert(row);
-
                     $("#standardWindow").window("open");
                     //将Json数据，填充到窗口中
                     $("#standardForm").form("load", row);
-
                 } else {
                     $.messager.alert("提示信息", "修改操作只能选择一条", "warning");
                 }
@@ -94,7 +91,28 @@
             text: '作废',
             iconCls: 'icon-cancel',
             handler: function () {
-                alert('作废');
+                //获取当前datagrid选中的所有数组
+                var rows = $("#grid").datagrid("getSelections");
+                var ids=new Array();
+                var i=0;
+                if(rows.length != 0){
+                    $.each(rows,function (i,n) {
+                        ids[i]=n.id;
+                        i++;
+                    });
+                    $.get("../../standard/delete?ids="+ids, function (data) {
+                        if (data.success) {
+                            $.messager.show({
+                                title: '提示窗口',
+                                msg: data.message
+                            });
+                            //刷新列表
+                            $('#grid').datagrid("reload");
+                        }
+                    });
+                }else{
+                    $.messager.alert("提示信息", "修改操作必须选择一条", "warning");
+                }
             }
         }, {
             id: 'button-restore',
@@ -103,7 +121,8 @@
             handler: function () {
                 alert('还原');
             }
-        }];
+        }
+        ];
 
         // 定义列
         var columns = [[{
@@ -150,6 +169,7 @@
             width: 120,
             align: 'center'
         }]];
+
     </script>
 </head>
 
@@ -193,22 +213,22 @@
                 <tr>
                     <td>最大重量</td>
                     <td>
-                        <input type="text" name="maxWeight" 
-                        	class="easyui-numberbox" required="true"/>
+                        <input type="text" name="maxWeight"
+                               class="easyui-numberbox" required="true"/>
                     </td>
                 </tr>
                 <tr>
                     <td>最小长度</td>
                     <td>
-                        <input type="text" name="minLength" 
-                        	class="easyui-numberbox" data-options="min:0" required="true"/>
+                        <input type="text" name="minLength"
+                               class="easyui-numberbox" data-options="min:0" required="true"/>
                     </td>
                 </tr>
                 <tr>
                     <td>最大长度</td>
                     <td>
-                        <input type="text" name="maxLength" 
-                        	class="easyui-numberbox" required="true"/>
+                        <input type="text" name="maxLength"
+                               class="easyui-numberbox" required="true"/>
                     </td>
                 </tr>
             </table>

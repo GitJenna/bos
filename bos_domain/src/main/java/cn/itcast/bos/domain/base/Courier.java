@@ -6,6 +6,8 @@ import java.util.Set;
 import javax.persistence.*;
 
 import lombok.Data;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 /**
  * @description:快递员
@@ -40,8 +42,9 @@ public class Courier {
 	@Column(name = "C_VEHICLE_NUM")
 	private String vehicleNum; // 车牌号
 
-	@ManyToOne
-	@JoinColumn(name = "C_STANDARD_ID")
+	@ManyToOne(targetEntity = Standard.class)
+	@JoinColumn(name = "C_STANDARD_ID",referencedColumnName = "C_ID")
+	@NotFound(action= NotFoundAction.IGNORE)
 	private Standard standard;
 
 	@ManyToOne

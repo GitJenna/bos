@@ -3,16 +3,14 @@ package cn.itcast.bos.controller;
 import cn.itcast.bos.domain.base.Standard;
 import cn.itcast.bos.domain.common.ResponseResult;
 import cn.itcast.bos.service.StandardService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -24,8 +22,8 @@ public class StandardController {
 
     @RequestMapping("/pageQuery")
     public Map pageQuery(int page, int rows) {
-        Pageable pageable = PageRequest.of(page - 1, rows);
-        Page<Standard> pageData=standardService.findPageData(pageable);
+
+        Page<Standard> pageData=standardService.findPageData(page,rows);
         Map<String,Object> result=new HashMap<String,Object>();
         //获取总记录数
         result.put("total",pageData.getTotalElements());
@@ -45,4 +43,22 @@ public class StandardController {
         return ResponseResult.SUCCESS();
     }
 
+
+    @RequestMapping("/delete")
+    public ResponseResult delete(int[] ids) {
+        try {
+            for (int id : ids) {
+                standardService.delete(id);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseResult.FAIL();
+        }
+        return ResponseResult.SUCCESS();
+    }
+
+    @RequestMapping("/findAll")
+    public List<Standard> findAll() throws JsonProcessingException {
+        return standardService.findAll();
+    }
 }

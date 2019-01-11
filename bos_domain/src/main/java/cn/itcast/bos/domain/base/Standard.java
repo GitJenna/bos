@@ -36,4 +36,18 @@ public class Standard implements Serializable{
 	@Column(name = "C_OPERATING_COMPANY")
 	private String operatingCompany; // 操作单位
 
+	@Override
+	public String toString() {
+		return "Standard{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", minWeight=" + minWeight +
+				", maxWeight=" + maxWeight +
+				", minLength=" + minLength +
+				", maxLength=" + maxLength +
+				", operatingTime=" + operatingTime +
+				", operator='" + operator + '\'' +
+				", operatingCompany='" + operatingCompany + '\'' +
+				'}';
+	}
 }
