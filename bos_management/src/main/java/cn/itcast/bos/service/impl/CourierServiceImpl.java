@@ -26,7 +26,6 @@ public class CourierServiceImpl implements CourierService {
 
     @Override
     public Page<Courier> findPageData(int page, int rows, Courier courier) {
-        System.out.println(courier.getStandard());
         Pageable pageable = PageRequest.of(page - 1, rows);
         Specification<Courier> spec=new Specification<Courier>() {
             @Override

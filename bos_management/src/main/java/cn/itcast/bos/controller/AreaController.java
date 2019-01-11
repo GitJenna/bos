@@ -4,6 +4,7 @@ import cn.itcast.bos.domain.base.Area;
 import cn.itcast.bos.domain.common.ResponseResult;
 import cn.itcast.bos.service.AreaService;
 import cn.itcast.bos.util.IdWorker;
+import cn.itcast.bos.util.PinYin4jUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -38,7 +39,7 @@ public class AreaController {
     public ResponseResult save(Area area) {
         if(area.getId()==null||"".equals(area.getId())){
             area.setId((new IdWorker()).nextId()+"");
-            System.out.println(area.getId());
+            //System.out.println(area.getId());
         }
         try {
             areaService.save(area);
@@ -77,6 +78,22 @@ public class AreaController {
             area.setCity(row.getCell(2).getStringCellValue());
             area.setDistrict(row.getCell(3).getStringCellValue());
             area.setPostcode(row.getCell(4).getStringCellValue());
+
+            //基于pinyin4j生成城市编码和简码
+            String province=area.getProvince();
+            String city=area.getCity();
+            String district=area.getDistrict();
+            province=province.substring(0,province.length()-1);
+            city=city.substring(0,city.length()-1);
+            String[] headArry= PinYin4jUtils.getHeadByString(province+city+district);
+            StringBuffer buffer=new StringBuffer();
+            for (String headStr : headArry) {
+                buffer.append(headStr);
+            }
+            String shortycode=buffer.toString();
+            area.setShortcode(shortycode);
+            String citycode=PinYin4jUtils.hanziToPinyin(city,"");
+            area.setCitycode(citycode);
             areaService.save(area);
         }
     }

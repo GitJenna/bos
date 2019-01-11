@@ -38,14 +38,14 @@
         function doDelete() {
             //获取当前datagrid选中的所有数组
             var rows = $("#grid").datagrid("getSelections");
-            var ids=new Array();
-            var i=0;
-            if(rows.length != 0){
-                $.each(rows,function (i,n) {
-                    ids[i]=n.id;
+            var ids = new Array();
+            var i = 0;
+            if (rows.length != 0) {
+                $.each(rows, function (i, n) {
+                    ids[i] = n.id;
                     i++;
                 });
-                $.get("../../area/delete?ids="+ids, function (data) {
+                $.get("../../area/delete?ids=" + ids, function (data) {
                     if (data.success) {
                         $.messager.show({
                             title: '提示窗口',
@@ -55,7 +55,7 @@
                         $('#grid').datagrid("reload");
                     }
                 });
-            }else{
+            } else {
                 $.messager.alert("提示信息", "删除操作必须选择一条", "warning");
             }
         }
@@ -85,7 +85,7 @@
             text: '查询',
             iconCls: 'icon-search',
             handler: doSearch
-        },{
+        }, {
             id: 'button-import',
             text: '导入',
             iconCls: 'icon-redo'
@@ -126,19 +126,19 @@
             align: 'center'
         }]];
 
-        $.fn.serializeJson=function () {
-            var serializeObj={};
-            var array=this.serializeArray();
-            var str=this.serialize;
+        $.fn.serializeJson = function () {
+            var serializeObj = {};
+            var array = this.serializeArray();
+            var str = this.serialize;
             $(array).each(function () {
-                if(serializeObj[this.name]){
-                    if($.isArray(serializeObj[this.name])){
+                if (serializeObj[this.name]) {
+                    if ($.isArray(serializeObj[this.name])) {
                         serializeObj[this.name].push(this.value);
-                    }else {
-                        serializeObj[this.name]=[serializeObj[this.name],this.value];
+                    } else {
+                        serializeObj[this.name] = [serializeObj[this.name], this.value];
                     }
-                }else {
-                    serializeObj[this.name]=this.value;
+                } else {
+                    serializeObj[this.name] = this.value;
                 }
             });
             return serializeObj;
@@ -199,8 +199,8 @@
 
             //查询按钮事件
             $("#searchBtn").click(function () {
-                var params=$("#searchForm").serializeJson();
-                $("#grid").datagrid('load',params);//Json对象绑定，完成带有条件查询
+                var params = $("#searchForm").serializeJson();
+                $("#grid").datagrid('load', params);//Json对象绑定，完成带有条件查询
                 $("#searchWindow").window('close');
             });
 
@@ -210,17 +210,21 @@
                 name: 'file',
                 onSelect: function () {
                     this.autoSubmit = false;
-                    var filename=this.filename();
-                    var regex=/^.*\.(xls|xlsx)$/;
-                    if(regex.test(filename)){
+                    var filename = this.filename();
+                    var regex = /^.*\.(xls|xlsx)$/;
+                    if (regex.test(filename)) {
                         this.submit();
-                    }else {
-                        $.messager.alert("警告","只能上传.xls或.xlsx结尾的文件！","warning");
+                        $.messager.progress({
+                            interval:2000
+                        });
+                        window.setTimeout("$.messager.progress('close')",20000);
+                    } else {
+                        $.messager.alert("警告", "只能上传.xls或.xlsx结尾的文件！", "warning");
                     }
                 },
                 onComplete: function (response) {
-                    alert(文件上传成功);
-                    $("#grid").datagrid("reload");
+                    alert("文件上传成功");
+                    $("#grid").datagrid('reload');
                 }
             });
         });
